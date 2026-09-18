@@ -14,7 +14,7 @@ const TrimBox = (() => {
   const DETECT_WIDTH = 200; // small + fast, just enough to find edges reliably
   const BG_TOLERANCE = 26; // per-channel-ish color distance to count as "background"
   const MIN_CONTENT_ROW_PX = 2; // ignore single stray pixels/noise
-  const PADDING_FRAC = 0.012; // small safety margin so we don't clip content edges
+  const PADDING_FRAC = 0.003; // hug the content tightly — no extra margin beyond its own edge
 
   function colorDistance(r1, g1, b1, r2, g2, b2) {
     return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
