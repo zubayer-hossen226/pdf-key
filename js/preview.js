@@ -76,16 +76,13 @@ const Preview = (() => {
       const slot = rects[i];
       if (!slide) continue; // empty slot — leave blank, per spec
 
-      if (layout.borderOnCache !== undefined) { /* noop placeholder */ }
-
-      if (state.borderOn) {
-        ctx.strokeStyle = '#d7d7e0';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(slot.x + 0.5, slot.y + 0.5, slot.width - 1, slot.height - 1);
-      }
-
       if (slide.kind === 'blank') {
-        continue; // blank slide = empty (bordered) rectangle
+        if (state.borderOn) {
+          ctx.strokeStyle = '#d7d7e0';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(slot.x + 2.5, slot.y + 2.5, slot.width - 5, slot.height - 5);
+        }
+        continue; // blank slide = empty (optionally bordered) rectangle
       }
 
       // source slide
@@ -116,6 +113,15 @@ const Preview = (() => {
         temp.height = 0;
       } else {
         ctx.drawImage(img, fitted.x, fitted.y, fitted.width, fitted.height);
+      }
+
+      // Border hugs the ACTUAL visible slide (fitted rect), not the whole
+      // grid cell — matches export-pdf.js exactly, no dead space inside it.
+      if (state.borderOn) {
+        const pad = 1.5;
+        ctx.strokeStyle = '#c7c7cf';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(fitted.x - pad + 0.5, fitted.y - pad + 0.5, fitted.width + pad * 2 - 1, fitted.height + pad * 2 - 1);
       }
     }
 
