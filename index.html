@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Z Key — Printable PDF Notes</title>
+<meta name="description" content="Turn any study PDF into a printable, paper-saving handout. Free, private, works offline." />
+<meta name="theme-color" content="#6c4bff" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png" />
+<link rel="apple-touch-icon" href="assets/icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Z Key" />
+
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/glass.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+<!-- Decorative animated gradient background, shared by every screen -->
+<div class="app-bg" aria-hidden="true">
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+  <div class="blob blob-c"></div>
+</div>
+
+<!-- ============ WELCOME SCREEN ============ -->
+<section id="welcome-screen" class="welcome-screen" aria-hidden="false">
+  <div class="welcome-card">
+    <img src="assets/icon-192.png" alt="" class="welcome-logo" />
+    <h1 class="welcome-title">Welcome from Zubayer</h1>
+    <p class="welcome-sub">Z Key — printable PDF notes, made simple</p>
+  </div>
+</section>
+
+<!-- ============ APP SHELL ============ -->
+<div id="app" class="app-shell" hidden>
+
+  <header class="topbar glass">
+    <div class="topbar-left">
+      <img src="assets/icon-96.png" class="brand-icon" alt="" />
+      <span class="brand-name">Z Key</span>
+    </div>
+    <button id="btn-start-over" class="icon-btn" title="Start new" hidden>
+      <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 5V2L7 7l5 5V9a5 5 0 1 1-5 5H5a7 7 0 1 0 7-9z"/></svg>
+    </button>
+  </header>
+
+  <main id="screens" class="screens">
+
+    <!-- SCREEN: Upload -->
+    <section id="screen-upload" class="screen active" data-screen="upload">
+      <div class="hero glass-card">
+        <h2>Turn your study PDF into printable notes</h2>
+        <p class="muted">Pick a layout, save paper, and print or share — everything stays on your phone.</p>
+
+        <label for="pdf-input" class="upload-drop glass-card">
+          <svg viewBox="0 0 24 24" width="36" height="36"><path fill="currentColor" d="M12 16a1 1 0 0 1-1-1V7.41l-2.3 2.3a1 1 0 1 1-1.4-1.42l4-4a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1-1.4 1.42L13 7.41V15a1 1 0 0 1-1 1Zm-7 2a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Z"/></svg>
+          <span class="upload-title">Upload PDF</span>
+          <span class="upload-sub">Tap to choose a file from your phone</span>
+        </label>
+        <input id="pdf-input" type="file" accept="application/pdf" hidden />
+
+        <p class="privacy-note">🔒 Your PDF is processed on your device and is not uploaded to a server.</p>
+      </div>
+    </section>
+
+    <!-- SCREEN: Add/Remove Pages -->
+    <section id="screen-pages" class="screen" data-screen="pages">
+      <div class="screen-header">
+        <h2>Add or Remove Pages</h2>
+        <p class="muted">Tap + to insert a 16:9 blank slide. Tap a page to remove or restore it.</p>
+      </div>
+
+      <div class="counters glass-card" id="counters">
+        <div class="counter"><span class="counter-num" id="count-total">0</span><span class="counter-label">Total</span></div>
+        <div class="counter"><span class="counter-num" id="count-removed">0</span><span class="counter-label">Removed</span></div>
+        <div class="counter"><span class="counter-num" id="count-blank">0</span><span class="counter-label">Blank</span></div>
+        <div class="counter counter-final"><span class="counter-num" id="count-final">0</span><span class="counter-label">Final</span></div>
+      </div>
+
+      <div id="page-grid" class="page-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- SCREEN: Layout selection -->
+    <section id="screen-layout" class="screen" data-screen="layout">
+      <div class="screen-header">
+        <div class="step-indicator">
+          <span class="step-dot done"></span><span class="step-dot done"></span>
+          <span class="step-dot active"></span><span class="step-dot"></span>
+        </div>
+        <p class="step-label">Step 3 of 4: Choose Layout</p>
+        <h2>Slides Per Page</h2>
+        <p class="muted">How many source slides should fit on one printed page?</p>
+      </div>
+
+      <div id="layout-grid" class="layout-grid"></div>
+    </section>
+
+    <!-- SCREEN: Style (Color / Border) -->
+    <section id="screen-style" class="screen" data-screen="style">
+      <div class="screen-header">
+        <div class="step-indicator">
+          <span class="step-dot done"></span><span class="step-dot done"></span>
+          <span class="step-dot done"></span><span class="step-dot active"></span>
+        </div>
+        <p class="step-label">Step 4 of 4: Style</p>
+        <h2>Color &amp; Borders</h2>
+      </div>
+
+      <div class="style-block glass-card">
+        <h3>Color mode</h3>
+        <div class="segmented" id="color-mode-toggle">
+          <button class="segmented-btn active" data-value="color">Color</button>
+          <button class="segmented-btn" data-value="bw">Black &amp; White</button>
+        </div>
+        <p class="muted small">Color keeps your PDF's original look. Black &amp; white creates a clean, print-friendly version.</p>
+      </div>
+
+      <div class="style-block glass-card">
+        <h3>Slide borders</h3>
+        <div class="segmented" id="border-toggle">
+          <button class="segmented-btn active" data-value="on">Border ON</button>
+          <button class="segmented-btn" data-value="off">Border OFF</button>
+        </div>
+        <p class="muted small">Borders make each slide clearly separated on the page.</p>
+      </div>
+
+      <button id="btn-go-preview" class="primary-btn">Preview</button>
+    </section>
+
+    <!-- SCREEN: Preview -->
+    <section id="screen-preview" class="screen" data-screen="preview">
+      <div class="screen-header">
+        <h2>Preview</h2>
+        <p class="muted" id="preview-page-label">Page 1 of 1</p>
+      </div>
+
+      <div class="preview-viewport glass-card">
+        <button id="preview-prev" class="preview-nav" aria-label="Previous page">‹</button>
+        <div id="preview-canvas-wrap" class="preview-canvas-wrap">
+          <canvas id="preview-canvas"></canvas>
+        </div>
+        <button id="preview-next" class="preview-nav" aria-label="Next page">›</button>
+      </div>
+
+      <div class="preview-actions">
+        <button id="btn-edit-settings" class="secondary-btn">Edit Settings</button>
+        <button id="btn-generate-pdf" class="primary-btn">Generate PDF</button>
+      </div>
+    </section>
+
+    <!-- SCREEN: Done -->
+    <section id="screen-done" class="screen" data-screen="done">
+      <div class="done-card glass-card">
+        <div class="done-check">✓</div>
+        <h2>Your PDF is ready!</h2>
+        <p class="muted" id="done-summary"></p>
+
+        <div class="done-actions">
+          <button id="btn-download" class="primary-btn">Download PDF</button>
+          <button id="btn-share" class="secondary-btn">Share</button>
+          <button id="btn-print" class="secondary-btn">Print</button>
+          <button id="btn-start-new" class="ghost-btn">Start New</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Fixed bottom continue bar (shown on upload/pages/layout screens) -->
+  <div id="bottom-bar" class="bottom-bar glass" hidden>
+    <button id="btn-continue" class="primary-btn full-width">Continue</button>
+  </div>
+</div>
+
+<!-- ============ LOADING OVERLAY ============ -->
+<div id="loading-overlay" class="loading-overlay" hidden>
+  <div class="loading-card glass-card">
+    <div class="bounce-loader">
+      <span></span><span></span><span></span>
+    </div>
+    <p id="loading-message" class="loading-message">Preparing your PDF...</p>
+    <div class="progress-track" id="loading-progress-track" hidden>
+      <div class="progress-fill" id="loading-progress-fill"></div>
+    </div>
+    <p id="loading-percent" class="loading-percent" hidden></p>
+  </div>
+</div>
+
+<!-- ============ ERROR TOAST ============ -->
+<div id="error-toast" class="error-toast" hidden role="alert">
+  <span id="error-toast-text"></span>
+  <button id="error-toast-close" aria-label="Dismiss">×</button>
+</div>
+
+<!-- Vendor libraries (pdf.js + pdf-lib), loaded dynamically by vendor-loader.js -->
+<script src="js/utils.js"></script>
+<script src="js/state.js"></script>
+<script src="js/loading.js"></script>
+<script src="js/vendor-loader.js"></script>
+<script src="js/pdf-import.js"></script>
+<script src="js/trim.js"></script>
+<script src="js/thumbnails.js"></script>
+<script src="js/page-manager.js"></script>
+<script src="js/layouts.js"></script>
+<script src="js/color-mode.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/preview.js"></script>
+<script src="js/export-pdf.js"></script>
+<script src="js/router.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
