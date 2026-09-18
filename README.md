@@ -74,11 +74,21 @@ z-key/
 
 - The original PDF bytes are kept once, untouched, and reused for export —
   never re-uploaded, never fully rasterized.
-- **Color mode** never converts pages to images: `pdf-lib`'s `embedPdf`
-  embeds the original vector/text page content directly into the output.
+- **Multiple PDFs can be uploaded at once** (e.g. 3-4 class PDFs for one
+  chapter) — they're merged, in filename order, into a single continuous
+  slide sequence before layout/export.
+- **Color mode** never converts pages to images: `pdf-lib`'s `embedPage`
+  embeds the original vector/text page content directly into the output,
+  cropped to each source document's uniform content box.
 - **Black & white mode** rasterizes *only* the source pages that are
   actually used, one at a time, sized to how large they'll actually print
-  (not a fixed huge resolution) — never the whole document at once.
+  — and automatically inverts dark-themed slides (dark background, light
+  text) so the printed result is always dark text on white paper.
+- **Consistent cropping**: rather than auto-cropping each page's border
+  independently (which made adjacent slides look mismatched in size), Z
+  Key samples a subset of pages per source document, takes the median
+  content box, and applies that *same* crop to every page from that
+  document — so rows and columns line up cleanly.
 - Page thumbnails render lazily (`IntersectionObserver`) and are cached in
   a bounded LRU-style cache (oldest entries evicted after ~60 pages) so a
   200-page PDF doesn't keep 200 canvases in memory.

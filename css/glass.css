@@ -1,0 +1,112 @@
+/* Z Key — Glassmorphism design system */
+
+:root {
+  --c-bg: #100b24;
+  --c-purple: #7c5cff;
+  --c-blue: #4c8bff;
+  --c-cyan: #35d6d6;
+  --c-pink: #ff5fb0;
+  --c-text: #f4f2ff;
+  --c-text-muted: #b9b3d9;
+  --c-success: #35d68f;
+  --c-danger: #ff5f7a;
+
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-strong: rgba(255, 255, 255, 0.13);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px rgba(15, 8, 40, 0.45);
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+}
+
+/* Animated colorful blurred background */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: radial-gradient(circle at 20% 10%, #1c1440 0%, #100b24 55%, #0a0718 100%);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.blob-a {
+  width: 60vmax;
+  height: 60vmax;
+  top: -20vmax;
+  left: -15vmax;
+  background: radial-gradient(circle, var(--c-purple), transparent 70%);
+  animation: float-a 22s ease-in-out infinite;
+}
+
+.blob-b {
+  width: 50vmax;
+  height: 50vmax;
+  bottom: -18vmax;
+  right: -12vmax;
+  background: radial-gradient(circle, var(--c-blue), transparent 70%);
+  animation: float-b 26s ease-in-out infinite;
+}
+
+.blob-c {
+  width: 40vmax;
+  height: 40vmax;
+  top: 40%;
+  left: 50%;
+  background: radial-gradient(circle, var(--c-pink), transparent 70%);
+  animation: float-c 30s ease-in-out infinite;
+}
+
+@keyframes float-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(6vmax, 8vmax) scale(1.1); }
+}
+@keyframes float-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-6vmax, -5vmax) scale(1.08); }
+}
+@keyframes float-c {
+  0%, 100% { transform: translate(-50%, -40%) scale(1); }
+  50% { transform: translate(-45%, -55%) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob { animation: none; }
+}
+
+/* Core glass surfaces */
+.glass,
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-card {
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+/* Gradient accents used across buttons / badges / progress */
+.gradient-accent {
+  background: linear-gradient(135deg, var(--c-purple), var(--c-blue) 50%, var(--c-cyan) 100%);
+}
+
+.gradient-accent-pink {
+  background: linear-gradient(135deg, var(--c-pink), var(--c-purple));
+}
