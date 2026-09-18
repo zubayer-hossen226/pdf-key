@@ -86,27 +86,30 @@ const ExportPdf = (() => {
         const rect = rects[s];
         if (!slide) continue; // empty slot stays empty
 
-        if (state.borderOn) {
-          page.drawRectangle({
-            x: rect.x,
-            y: pageSize.height - (rect.y + rect.height),
-            width: rect.width,
-            height: rect.height,
-            borderColor: rgb(0.82, 0.82, 0.86),
-            borderWidth: 1,
-          });
+        if (slide.kind === 'blank') {
+          if (state.borderOn) {
+            const m = 2;
+            page.drawRectangle({
+              x: rect.x + m,
+              y: pageSize.height - (rect.y + rect.height - m),
+              width: rect.width - m * 2,
+              height: rect.height - m * 2,
+              borderColor: rgb(0.82, 0.82, 0.86),
+              borderWidth: 1,
+            });
+          }
+          continue;
         }
 
-        if (slide.kind === 'blank') continue;
-
-        const inset = 3;
+        const inset = 2;
         const innerSlot = { x: rect.x + inset, y: rect.y + inset, width: rect.width - inset * 2, height: rect.height - inset * 2 };
 
+        let fitted;
         if (state.colorMode === 'color') {
           const embedded = embeddedByPageIndex.get(slide.pageIndex);
           if (!embedded) continue;
           const aspect = embedded.width / embedded.height;
-          const fitted = Renderer.fitContain(innerSlot, aspect);
+          fitted = Renderer.fitContain(innerSlot, aspect);
           page.drawPage(embedded, {
             x: fitted.x,
             y: pageSize.height - (fitted.y + fitted.height),
@@ -116,12 +119,26 @@ const ExportPdf = (() => {
         } else {
           const entry = embeddedByPageIndex.get(slide.pageIndex);
           if (!entry) continue;
-          const fitted = Renderer.fitContain(innerSlot, entry.aspect);
+          fitted = Renderer.fitContain(innerSlot, entry.aspect);
           page.drawImage(entry.image, {
             x: fitted.x,
             y: pageSize.height - (fitted.y + fitted.height),
             width: fitted.width,
             height: fitted.height,
+          });
+        }
+
+        // Border hugs the ACTUAL visible slide (fitted rect), not the
+        // whole grid cell — no dead space inside the border line.
+        if (state.borderOn && fitted) {
+          const pad = 1.5;
+          page.drawRectangle({
+            x: fitted.x - pad,
+            y: pageSize.height - (fitted.y + fitted.height + pad),
+            width: fitted.width + pad * 2,
+            height: fitted.height + pad * 2,
+            borderColor: rgb(0.75, 0.75, 0.78),
+            borderWidth: 1,
           });
         }
       }
