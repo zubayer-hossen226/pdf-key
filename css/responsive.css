@@ -1,0 +1,32 @@
+/* Z Key — Responsive rules (mobile-first; this file only adds breakpoints) */
+
+/* Small phones: tighten spacing a touch */
+@media (max-width: 359px) {
+  .screens { padding-left: 12px; padding-right: 12px; }
+  .counters { padding: 10px 4px; }
+  .layout-preview { width: 54px; height: 72px; }
+}
+
+/* Tablets */
+@media (min-width: 600px) {
+  .screens { padding-left: 28px; padding-right: 28px; }
+  .page-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .layout-grid { grid-template-columns: repeat(2, 1fr); }
+  .done-actions { flex-direction: row; flex-wrap: wrap; }
+  .done-actions button { flex: 1 1 45%; }
+}
+
+/* Desktop / large tablets: keep the mobile-app feel, just centered with room */
+@media (min-width: 900px) {
+  .app-shell { max-width: 900px; margin: 0 auto; }
+  .topbar { border-radius: 0 0 20px 20px; }
+  .page-grid { grid-template-columns: repeat(4, 1fr); }
+  .layout-grid { grid-template-columns: repeat(2, 1fr); }
+  .preview-viewport { min-height: 560px; }
+  #preview-canvas { max-height: 70vh; }
+  .bottom-bar-inner, .bottom-bar { max-width: 900px; }
+}
+
+@media (min-width: 1200px) {
+  .page-grid { grid-template-columns: repeat(5, 1fr); }
+}
